@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Malaria – Comprehensive PHN Review</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        .transition-all { transition: all 0.3s ease; }
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .group:hover .group-hover\:rotate-y-180 { transform: rotateY(180deg); }
+
+        .recall-mode .reveal-text {
+            background-color: #cbd5e1;
+            color: transparent;
+            border-radius: 0.375rem;
+            padding: 0 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            box-shadow: inset 0 0 0 1px #94a3b8;
+        }
+        .recall-mode .reveal-text:hover,
+        .recall-mode .reveal-text.revealed {
+            background-color: #fde047;
+            color: #1e293b;
+            box-shadow: none;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 8px; }
+        .content-section { animation: fade 0.3s ease; }
+        @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .locked-section { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { malaria: { light: '#fee2e2', DEFAULT: '#dc2626', dark: '#991b1b' } } } }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 h-screen flex flex-col md:flex-row font-sans text-slate-800 overflow-hidden">
+
+    <!-- Mobile Header with burger on LEFT -->
+    <div class="md:hidden bg-malaria-dark text-white p-4 flex justify-between items-center shadow-md z-30 shrink-0">
+        <button onclick="toggleMobileMenu()" class="text-white focus:outline-none z-40">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
+        <h1 class="font-bold text-lg absolute left-1/2 transform -translate-x-1/2 pointer-events-none">
+            <i class="fa-solid fa-mosquito mr-2 text-malaria-light"></i> Malaria
+        </h1>
+        <div class="w-8"></div>
+    </div>
+
+    <nav id="sidebar" class="hidden md:flex flex-col w-full md:w-80 bg-white shadow-2xl h-full absolute md:relative z-30 transition-transform duration-300 shrink-0 border-r border-slate-200">
+        <div class="p-6 bg-gradient-to-br from-malaria-dark to-malaria text-white hidden md:block shrink-0">
+            <h1 class="font-black text-2xl tracking-wide"><i class="fa-solid fa-mosquito text-malaria-light mr-2"></i> Malaria</h1>
+            <p class="text-sm text-red-100 mt-1 font-medium">Communicable Disease · PHN Review</p>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1 text-sm font-medium">
+                <li><button onclick="showSection('home')" id="btn-home" class="nav-btn w-full text-left px-6 py-3 bg-malaria-light text-malaria-dark border-r-4 border-malaria-dark transition-colors"><i class="fa-solid fa-house w-6 nav-icon"></i><i class="fa-solid fa-lock w-6 hidden text-slate-400"></i> Home / Start</button></li>
+                <li><button onclick="showSection('overview')" id="btn-overview" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-biohazard w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Epidemiology & Overview</button></li>
+                <li><button onclick="showSection('clinical')" id="btn-clinical" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-stethoscope w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Clinical Features & Diagnosis</button></li>
+                <li><button onclick="showSection('transmission')" id="btn-transmission" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-hand-holding-medical w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Transmission & Vector</button></li>
+                <li><button onclick="showSection('prevention')" id="btn-prevention" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-syringe w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Prevention & Control</button></li>
+                <li><button onclick="showSection('treatment')" id="btn-treatment" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-capsules w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Treatment & Complications</button></li>
+                <li><button onclick="showSection('phn')" id="btn-phn" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-user-nurse w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> PHN Role & Nursing Care</button></li>
+                <li><button onclick="showSection('mnemonics')" id="btn-mnemonics" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors border-t border-slate-200 mt-2 locked-section"><i class="fa-solid fa-brain w-6 text-malaria nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Mnemonic Appendix</button></li>
+                <li><button onclick="showSection('final_quiz_sec')" id="btn-final_quiz_sec" class="nav-btn w-full text-left px-6 py-3 text-slate-600 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-graduation-cap w-6 text-amber-500 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Final 50‑Item Exam</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="flex-1 h-full overflow-y-auto bg-slate-100 relative w-full">
+        <!-- Active Recall button - repositioned on mobile -->
+        <div class="fixed top-16 md:top-4 right-4 md:right-8 z-40 flex items-center bg-white/90 backdrop-blur px-4 py-3 rounded-full shadow-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors" onclick="toggleRecallMode()">
+            <span class="mr-3 text-sm font-bold text-slate-700 hidden md:inline"><i class="fa-solid fa-brain text-malaria mr-1"></i> Active Recall</span>
+            <span class="mr-3 text-sm font-bold text-slate-700 md:hidden"><i class="fa-solid fa-brain text-malaria"></i></span>
+            <button id="recall-toggle" class="w-12 h-6 bg-slate-300 rounded-full relative transition-colors duration-300 focus:outline-none shadow-inner pointer-events-none">
+                <div id="recall-knob" class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform duration-300 shadow"></div>
+            </button>
+        </div>
+
+        <div class="p-4 md:p-8 max-w-6xl mx-auto pb-32">
+
+            <!-- HOME SECTION -->
+            <section id="home" class="content-section flex flex-col items-center justify-center min-h-[80vh] text-center block">
+                <div class="bg-gradient-to-br from-slate-800 to-malaria-dark text-white rounded-3xl shadow-2xl p-10 md:p-16 w-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-10 -mr-10 text-white opacity-5 pointer-events-none"><i class="fa-solid fa-bug text-[20rem]"></i></div>
+                    <div class="relative z-10">
+                        <div class="bg-white/10 backdrop-blur-sm inline-block p-4 rounded-full text-malaria-light mb-6 shadow-sm border border-white/20">
+                            <i class="fa-solid fa-mosquito text-5xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-red-200 mb-2 uppercase tracking-widest">Communicable Disease Review</h3>
+                        <h1 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight drop-shadow-md">Malaria</h1>
+                        <div class="bg-white/10 backdrop-blur inline-block px-6 py-3 rounded-full mb-10 border border-white/20">
+                            <p class="text-lg text-white font-medium">"Parasitic disease – transmitted by Anopheles mosquito. Preventable, treatable."</p>
+                        </div>
+                        <button onclick="unlockFirstSection()" class="bg-red-600 hover:bg-red-500 text-white font-black py-4 px-10 rounded-full shadow-xl transition-transform hover:scale-105 text-lg flex items-center mx-auto focus:outline-none">
+                            Begin Lecture <i class="fa-solid fa-arrow-right ml-3"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 1: Epidemiology & Overview -->
+            <section id="overview" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 border-b-2 border-malaria pb-3"><i class="fa-solid fa-biohazard text-malaria mr-4"></i> Epidemiology & Overview</h2>
+                    <div class="bg-red-50 border-l-4 border-malaria p-4 mb-6 rounded-r shadow-sm">
+                        <p><strong class="text-malaria-dark">Malaria</strong> – protozoan disease caused by <span class="reveal-text font-bold">Plasmodium</span> species, transmitted by female <span class="reveal-text font-bold">Anopheles</span> mosquito.</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <h3 class="font-bold text-lg mb-3"><i class="fa-solid fa-chart-line text-malaria mr-2"></i> Public Health Significance (Philippines)</h3>
+                            <ul class="list-disc pl-5 space-y-2 text-sm">
+                                <li>Endemic in many provinces; highest incidence in <span class="reveal-text">Palawan, Mindoro, Mindanao (Regions 9, 10, 12, CARAGA, Bangsamoro)</span>.</li>
+                                <li>Annual parasite incidence (API) target: <span class="reveal-text">reduction by 20% annually</span> (1994 goal).</li>
+                                <li>Major vector: <span class="reveal-text">Anopheles flavirostris</span> (bites at night, prefers clean water).</li>
+                                <li>Four species: <em>P. falciparum</em> (most severe), <em>P. vivax</em>, <em>P. ovale</em>, <em>P. malariae</em>.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <h3 class="font-bold text-lg mb-3"><i class="fa-solid fa-virus mr-2 text-malaria"></i> Agent & Life Cycle</h3>
+                            <p><strong>Infective stage to humans:</strong> <span class="reveal-text">Sporozoites</span> (in mosquito salivary glands).</p>
+                            <p><strong>Parasite development:</strong> Sporozoites → liver (exoerythrocytic) → merozoites → invade RBCs → asexual cycle → gametocytes → mosquito.</p>
+                            <p><strong>Incubation period:</strong> <span class="reveal-text">10‑35 days (depending on species)</span>.</p>
+                        </div>
+                    </div>
+                    <button onclick="openQuiz('overview')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3 text-2xl text-malaria"></i> Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- SECTION 2: Clinical Features & Diagnosis -->
+            <section id="clinical" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 border-b-2 border-malaria pb-3"><i class="fa-solid fa-stethoscope text-malaria mr-4"></i> Clinical Features & Diagnosis</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-red-50 p-5 rounded-xl border border-red-200">
+                            <h3 class="font-bold text-lg text-red-800 mb-2">Classic Paroxysms (P. vivax, P. ovale, P. malariae)</h3>
+                            <ul class="list-disc pl-5 space-y-1 text-sm">
+                                <li><strong>Cold stage:</strong> sudden onset of <span class="reveal-text">chills, rigors</span> (15‑60 min).</li>
+                                <li><strong>Hot stage:</strong> high fever (40‑41°C), headache, vomiting, flushing (2‑6 hours).</li>
+                                <li><strong>Sweating stage:</strong> profuse sweating, temperature drops, exhaustion (2‑4 hours).</li>
+                                <li>Cyclical fever: <span class="reveal-text">P. vivax/ovale – every 48h (tertian); P. malariae – every 72h (quartan).</span></li>
+                                <li><strong>P. falciparum:</strong> irregular fever, may cause severe complications (cerebral malaria, ARDS, renal failure).</li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-50 p-5 rounded-xl border border-blue-200">
+                            <h3 class="font-bold text-lg">Diagnosis</h3>
+                            <ul class="list-disc pl-5 space-y-1 text-sm">
+                                <li><strong>Microscopy:</strong> Thick and thin blood smear – gold standard; identifies species and parasitemia.</li>
+                                <li><strong>Rapid Diagnostic Test (RDT):</strong> detects HRP2/pLDH; useful in remote areas.</li>
+                                <li><strong>PCR:</strong> for species confirmation and research.</li>
+                                <li>Clinical: fever + history of travel to endemic area + chills.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <button onclick="openQuiz('clinical')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3 text-2xl text-malaria"></i> Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- SECTION 3: Transmission & Vector -->
+            <section id="transmission" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 border-b-2 border-malaria pb-3"><i class="fa-solid fa-hand-holding-medical text-malaria mr-4"></i> Transmission & Vector</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-red-50 p-5 rounded-xl border border-red-200">
+                            <h3 class="font-bold text-lg text-red-800 mb-2"><i class="fa-solid fa-people-arrows"></i> Mode of Transmission</h3>
+                            <ul class="list-disc pl-5 space-y-1 text-sm">
+                                <li>Bite of <span class="reveal-text">female Anopheles mosquito</span> (usually bites from dusk to dawn).</li>
+                                <li>Blood transfusion (rare), congenital (from mother to fetus), needle‑sharing (IV drug users).</li>
+                                <li>NOT directly person‑to‑person.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50 p-5 rounded-xl border border-amber-200">
+                            <h3 class="font-bold text-lg">Vector Characteristics & Control</h3>
+                            <ul class="list-disc pl-5 space-y-1 text-sm">
+                                <li><strong>Anopheles flavirostris</strong> – primary vector in Philippines; breeds in <span class="reveal-text">clean, slow‑moving water (streams, rice paddies)</span>.</li>
+                                <li>Peak biting: <span class="reveal-text">9 PM – 3 AM</span>.</li>
+                                <li>Resting habits: indoor (endophilic) and outdoor.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <button onclick="openQuiz('transmission')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3 text-2xl text-malaria"></i> Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- SECTION 4: Prevention & Control -->
+            <section id="prevention" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 border-b-2 border-malaria pb-3"><i class="fa-solid fa-syringe text-malaria mr-4"></i> Prevention & Control</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-green-50 p-5 rounded-xl border border-green-200">
+                            <h3 class="font-bold text-lg"><i class="fa-solid fa-shield-heart"></i> Personal Protective Measures</h3>
+                            <ul class="list-disc pl-5 space-y-1 text-sm">
+                                <li><span class="reveal-text">Insecticide‑treated mosquito nets (ITNs)</span> – most effective.</li>
+                                <li>Wear long sleeves, long pants, socks (especially evening).</li>
+                                <li>Use insect repellents (DEET, picaridin).</li>
+                                <li>Screen windows and doors.</li>
+                                <li><strong>Chemoprophylaxis:</strong> Chloroquine (for sensitive areas) or doxycycline/mefloquine for travelers to endemic zones.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-50 p-5 rounded-xl border border-blue-200">
+                            <h3 class="font-bold text-lg">Vector Control Measures</h3>
+                            <ul class="list-disc pl-5 space-y-1 text-sm">
+                                <li><strong>Indoor residual spraying (IRS)</strong> with insecticides.</li>
+                                <li>Environmental management: drainage, filling breeding sites, stream clearing.</li>
+                                <li><strong>Larvivorous fish</strong> (e.g., <em>Gambusia</em>) in rice fields and streams.</li>
+                                <li>Zooprophylaxis: keeping animals (carabaos) near houses to divert mosquitoes.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <button onclick="openQuiz('prevention')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3 text-2xl text-malaria"></i> Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- SECTION 5: Treatment & Complications -->
+            <section id="treatment" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 border-b-2 border-malaria pb-3"><i class="fa-solid fa-capsules text-malaria mr-4"></i> Treatment & Complications</h2>
+                    <div class="bg-amber-50 p-5 rounded-xl border border-amber-200 mb-6">
+                        <h3 class="font-bold text-lg">Antimalarial Therapy (DOH guidelines)</h3>
+                        <ul class="list-disc pl-5 space-y-1 text-sm">
+                            <li><strong>Uncomplicated P. falciparum:</strong> <span class="reveal-text">Artemisinin‑based combination therapy (ACT)</span> – e.g., artemether‑lumefantrine.</li>
+                            <li><strong>P. vivax / P. ovale:</strong> Chloroquine + <span class="reveal-text">Primaquine</span> (to kill hypnozoites and prevent relapse).</li>
+                            <li><strong>Severe malaria (IV):</strong> Artesunate IV (preferred) or quinine.</li>
+                            <li><strong>Chemoprophylaxis:</strong> Chloroquine weekly (for areas without resistance) or doxycycline daily.</li>
+                        </ul>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-50 p-4 rounded-xl">
+                            <h3 class="font-bold">Complications (Severe Falciparum)</h3>
+                            <ul class="list-disc pl-5 text-sm">
+                                <li>Cerebral malaria (coma, seizures)</li>
+                                <li>Acute kidney injury (blackwater fever)</li>
+                                <li>ARDS, pulmonary edema</li>
+                                <li>Severe anemia, thrombocytopenia</li>
+                                <li>Hypoglycemia, metabolic acidosis</li>
+                                <li>Death if untreated</li>
+                            </ul>
+                        </div>
+                        <div class="bg-malaria-light p-4 rounded-xl">
+                            <h3 class="font-bold">Drug Resistance & Monitoring</h3>
+                            <ul class="list-disc pl-5 text-sm">
+                                <li>Chloroquine resistance – widespread in P. falciparum.</li>
+                                <li>ACT remains effective; monitor for artemisinin resistance.</li>
+                                <li>Primaquine contraindicated in G6PD deficiency (hemolysis).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <button onclick="openQuiz('treatment')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3 text-2xl text-malaria"></i> Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- SECTION 6: PHN Role & Nursing Care -->
+            <section id="phn" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 border-b-2 border-malaria pb-3"><i class="fa-solid fa-user-nurse text-malaria mr-4"></i> PHN Role & Nursing Care</h2>
+                    <ul class="list-disc pl-5 space-y-3 text-slate-700">
+                        <li><strong>Case finding & diagnosis:</strong> Recognize fever patterns; collect blood smear (thick/thin) – send to microscopy.</li>
+                        <li><strong>Treatment support:</strong> Ensure compliance with ACT; supervise directly if possible (DOT for malaria).</li>
+                        <li><strong>Health education:</strong> Use of insecticide‑treated nets, repellents, clearing breeding sites.</li>
+                        <li><strong>Vector control:</strong> Coordinate with local government for stream clearing, larvivorous fish, indoor spraying.</li>
+                        <li><strong>Chemoprophylaxis advice:</strong> For pregnant women (intermittent preventive treatment – IPT) using sulfadoxine‑pyrimethamine.</li>
+                        <li><strong>Monitoring:</strong> Watch for signs of severe malaria (altered consciousness, oliguria, bleeding). Refer immediately.</li>
+                        <li><strong>Surveillance:</strong> Malaria is notifiable; submit weekly reports (FHSIS/M‑1).</li>
+                        <li><strong>Outbreak response:</strong> Mass blood smear, focal spraying, distribution of ITNs.</li>
+                    </ul>
+                    <div class="bg-indigo-50 mt-6 p-4 rounded-xl border border-indigo-200">
+                        <p class="font-bold"><i class="fa-regular fa-hospital"></i> Related DOH Programs:</p>
+                        <p>Malaria Control Service · Roll Back Malaria · FHSIS (Monthly Report of Malaria) · Insecticide‑treated net distribution</p>
+                    </div>
+                    <button onclick="openQuiz('phn')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3 text-2xl text-malaria"></i> Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- SECTION 7: Mnemonic Appendix -->
+            <section id="mnemonics" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 border-b-2 border-malaria pb-3"><i class="fa-solid fa-brain text-malaria mr-4"></i> Mnemonic Appendix</h2>
+                    <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+                        <table class="w-full text-left text-sm md:text-base">
+                            <thead class="bg-slate-800 text-white"><tr><th class="p-3">Topic</th><th class="p-3">Mnemonic</th><th class="p-3">Meaning</th></tr></thead>
+                            <tbody class="divide-y bg-white">
+                                <tr><td class="p-3 font-semibold">Malaria species (severity)</td><td class="font-black text-malaria">F.V.O.M.</td><td class="reveal-text">Falciparum (severe), Vivax, Ovale, Malariae</td></tr>
+                                <tr class="bg-slate-50"><td class="p-3 font-semibold">Classic paroxysm stages</td><td class="font-black text-malaria">C.H.S.</td><td class="reveal-text">Cold stage, Hot stage, Sweating stage</td></tr>
+                                <tr><td class="p-3 font-semibold">Periodicity</td><td class="font-black text-malaria">Tertian / Quartan</td><td class="reveal-text">P. vivax/ovale = 48h (tertian); P. malariae = 72h (quartan)</td></tr>
+                                <tr class="bg-slate-50"><td class="p-3 font-semibold">Vector control methods</td><td class="font-black text-malaria">I.S.L.Z.</td><td class="reveal-text">IRS (spraying), Stream clearing, Larvivorous fish, Zooprophylaxis</td></tr>
+                                <tr><td class="p-3 font-semibold">Personal protection (night)</td><td class="font-black text-malaria">N.I.R.S.</td><td class="reveal-text">Nets (ITN), Insect repellent, long-sleeved clothing, Screens</td></tr>
+                                <tr class="bg-slate-50"><td class="p-3 font-semibold">First-line ACT</td><td class="font-black text-malaria">Artemether-Lumefantrine</td><td class="reveal-text">Coartem® – 6 doses over 3 days</td></tr>
+                                <tr><td class="p-3 font-semibold">Complications of severe malaria</td><td class="font-black text-malaria">C.A.R.A.H.</td><td class="reveal-text">Cerebral, ARDS, Renal failure, Anemia, Hypoglycemia</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button onclick="openQuiz('final_quiz')" class="mt-8 w-full bg-amber-500 text-slate-900 font-black py-4 rounded-xl shadow-md hover:bg-amber-400 transition-colors text-lg"><i class="fa-solid fa-graduation-cap mr-3"></i> Take Final 50‑Item Exam</button>
+                </div>
+            </section>
+
+            <!-- FINAL QUIZ SECTION -->
+            <section id="final_quiz_sec" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 text-center min-h-[60vh] flex flex-col justify-center items-center">
+                    <i class="fa-solid fa-graduation-cap text-8xl text-amber-400 mb-6"></i>
+                    <h2 class="text-4xl font-black text-slate-800 mb-4">Final Comprehensive Exam</h2>
+                    <p class="text-lg text-slate-600 mb-8 max-w-2xl">You have completed all modules. Test your mastery of Malaria – 50 items, need 75% to pass.</p>
+                    <button onclick="openQuiz('final_quiz')" class="w-full max-w-md bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors text-xl">Start Final Exam</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="quiz-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 md:p-8 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeQuiz()" class="absolute top-4 right-4 text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <h2 id="quiz-title" class="text-3xl font-black text-slate-800 mb-2"></h2>
+            <p class="text-slate-600 mb-6 font-medium border-b border-slate-200 pb-4">Score at least <span class="font-bold text-malaria">75%</span> to unlock next section.</p>
+            <div id="quiz-questions-container" class="space-y-6"></div>
+            <button id="quiz-submit-btn" onclick="submitQuiz()" class="mt-8 w-full bg-malaria text-white font-bold py-4 rounded-xl hover:bg-malaria-dark transition-colors shadow-lg text-lg">Submit Answers</button>
+            <div id="quiz-result-container" class="hidden mt-6 text-center"></div>
+        </div>
+    </div>
+
+    <script>
+        let unlockedSections = ['home'];
+        const quizzes = {
+            overview: { next: 'clinical', questions: [
+                { q: "Which Plasmodium species causes the most severe form of malaria?", options: ["P. vivax", "P. falciparum", "P. ovale", "P. malariae"], ans: 1 },
+                { q: "What is the vector of malaria?", options: ["Aedes aegypti", "Culex quinquefasciatus", "Female Anopheles mosquito", "Male Anopheles mosquito"], ans: 2 },
+                { q: "The infective stage injected by the mosquito is:", options: ["Merozoite", "Sporozoite", "Gametocyte", "Trophozoite"], ans: 1 },
+                { q: "Where in the Philippines is malaria most endemic?", options: ["Metro Manila", "Palawan and Mindanao", "Cebu", "Ilocos"], ans: 1 },
+                { q: "The incubation period for P. falciparum is approximately:", options: ["7 days", "10-35 days", "2-3 months", "1 year"], ans: 1 },
+                { q: "Which species causes relapsing malaria due to hypnozoites?", options: ["P. falciparum", "P. malariae", "P. vivax and P. ovale", "All species"], ans: 2 },
+                { q: "Annual parasite incidence (API) target in the Philippines aimed for:", options: ["50% reduction", "20% annual reduction", "Eradication by 2000", "No target"], ans: 1 },
+                { q: "The primary vector in the Philippines is:", options: ["Anopheles minimus", "Anopheles flavirostris", "Anopheles maculatus", "Anopheles subpictus"], ans: 1 },
+                { q: "Peak biting time of Anopheles mosquitoes is:", options: ["Daytime", "Dusk to dawn (especially 9PM-3AM)", "Only midnight", "Morning"], ans: 1 },
+                { q: "Malaria is caused by a:", options: ["Virus", "Bacterium", "Protozoan parasite", "Fungus"], ans: 2 }
+            ] },
+            clinical: { next: 'transmission', questions: [
+                { q: "The classic paroxysm of malaria begins with:", options: ["High fever", "Profuse sweating", "Chills and rigors (cold stage)", "Headache"], ans: 2 },
+                { q: "P. vivax has a fever periodicity of:", options: ["Every 24h", "Every 48h (tertian)", "Every 72h (quartan)", "Irregular"], ans: 1 },
+                { q: "The fever pattern of P. malariae is:", options: ["Tertian", "Quartan (every 72h)", "No pattern", "Daily"], ans: 1 },
+                { q: "Gold standard for malaria diagnosis is:", options: ["RDT", "Microscopy (thick and thin smear)", "PCR", "Serology"], ans: 1 },
+                { q: "In a thick blood smear, what is visualized?", options: ["Parasites inside RBCs only", "Free parasites and parasites inside RBCs (higher sensitivity)", "Only gametocytes", "Only schizonts"], ans: 1 },
+                { q: "Cerebral malaria is most commonly caused by:", options: ["P. vivax", "P. falciparum", "P. ovale", "P. malariae"], ans: 1 },
+                { q: "Which stage of Plasmodium is found in human red blood cells?", options: ["Sporozoite", "Merozoite", "Oocyst", "Sporocyst"], ans: 1 },
+                { q: "Blackwater fever is a complication of severe malaria characterized by:", options: ["Hemoglobinuria and renal failure", "Black stools", "Melena", "Dark sputum"], ans: 0 },
+                { q: "Rapid Diagnostic Test (RDT) detects:", options: ["Parasite DNA", "Parasite antigens (HRP2, pLDH)", "Antibodies", "Whole parasites"], ans: 1 },
+                { q: "Hypoglycemia in severe malaria is due to:", options: ["Increased glucose production", "Decreased glucose consumption by parasites and quinine-induced hyperinsulinemia", "Liver failure only", "Malnutrition"], ans: 1 }
+            ] },
+            transmission: { next: 'prevention', questions: [
+                { q: "Which mosquito species transmits malaria?", options: ["Aedes", "Anopheles", "Culex", "Mansonia"], ans: 1 },
+                { q: "Malaria can be transmitted through all EXCEPT:", options: ["Mosquito bite", "Blood transfusion", "Person-to-person contact", "Congenital"], ans: 2 },
+                { q: "The sexual stage of Plasmodium (gametocyte) develops in:", options: ["Human liver", "Human RBC", "Mosquito midgut", "Mosquito salivary gland"], ans: 2 },
+                { q: "Anopheles mosquitoes breed in:", options: ["Stagnant polluted water", "Clean, slow-moving water (streams, rice paddies)", "Tree holes", "Saltwater"], ans: 1 },
+                { q: "The sporogonic cycle (in mosquito) takes approximately:", options: ["1-2 days", "7-20 days", "1 hour", "2 months"], ans: 1 },
+                { q: "Which of the following is NOT a mode of malaria transmission?", options: ["Needle sharing", "Organ transplant", "Sexual intercourse", "Blood transfusion"], ans: 2 },
+                { q: "The exoerythrocytic (liver) stage is responsible for:", options: ["Acute symptoms", "Relapses (hypnozoites)", "Mosquito infection", "Gametocyte production"], ans: 1 },
+                { q: "What is the duration of the life cycle of P. falciparum in humans before clinical symptoms?", options: ["48h", "5-7 days", "10-14 days", "30 days"], ans: 2 },
+                { q: "Why are female Anopheles the vectors?", options: ["They require blood meal for egg development", "Males do not bite", "Females live longer", "All of the above"], ans: 3 },
+                { q: "Zooprophylaxis refers to:", options: ["Vaccinating animals", "Keeping animals near houses to divert mosquitoes", "Killing animals", "Breeding fish"], ans: 1 }
+            ] },
+            prevention: { next: 'treatment', questions: [
+                { q: "The most effective personal protection against malaria is:", options: ["Insecticide‑treated mosquito net (ITN)", "Repellent only", "Long sleeves", "Screen windows"], ans: 0 },
+                { q: "Chemoprophylaxis for pregnant women in endemic areas (IPTp) uses:", options: ["Chloroquine", "Sulfadoxine‑pyrimethamine", "Artemether", "Primaquine"], ans: 1 },
+                { q: "Indoor residual spraying (IRS) targets:", options: ["Adult mosquitoes resting on walls", "Larvae in water", "Eggs", "Pupae"], ans: 0 },
+                { q: "Which fish is used for biological control of mosquito larvae?", options: ["Tilapia", "Gambusia (mosquitofish)", "Carp", "Catfish"], ans: 1 },
+                { q: "Stream clearing helps control malaria by:", options: ["Killing adult mosquitoes", "Removing vegetation that provides shade for breeding sites", "Increasing water flow", "Both B and C"], ans: 3 },
+                { q: "For travelers to malaria-endemic areas, chemoprophylaxis should be started:", options: ["After exposure", "1-2 weeks before travel, during, and after return", "Only during travel", "Only after returning"], ans: 1 },
+                { q: "Which of the following is a vector control method?", options: ["Draining breeding sites", "Using larvivorous fish", "Environmental management", "All of the above"], ans: 3 },
+                { q: "The goal of the Malaria Control Program is:", options: ["Eradication", "Reduction of morbidity and mortality by 20% annually (target)", "Isolation of patients", "Vaccination"], ans: 1 },
+                { q: "Insecticide‑treated nets should be re‑treated:", options: ["Every month", "Every 6-12 months or after 3 washes", "Never", "Every 5 years"], ans: 1 },
+                { q: "Mass drug administration (MDA) is used for:", options: ["Treatment of symptomatic cases only", "Elimination in high‑burden areas (with ACT)", "Only for children", "Only for pregnant women"], ans: 1 }
+            ] },
+            treatment: { next: 'phn', questions: [
+                { q: "First-line treatment for uncomplicated P. falciparum in the Philippines is:", options: ["Chloroquine", "Artemisinin-based combination therapy (ACT)", "Quinine alone", "Sulfadoxine-pyrimethamine"], ans: 1 },
+                { q: "Primaquine is used to:", options: ["Treat P. falciparum", "Kill hypnozoites (P. vivax/ovale) to prevent relapse", "Reduce fever", "Kill mosquitoes"], ans: 1 },
+                { q: "Primaquine is contraindicated in patients with:", options: ["Pregnancy", "G6PD deficiency (risk of hemolysis)", "Children under 1 year", "All of the above"], ans: 3 },
+                { q: "Severe malaria should be treated with intravenous:", options: ["Chloroquine", "Artesunate (or quinine if artesunate unavailable)", "Oral ACT", "Primaquine"], ans: 1 },
+                { q: "Cerebral malaria is a complication caused by:", options: ["P. vivax", "P. falciparum", "P. ovale", "P. malariae"], ans: 1 },
+                { q: "Blackwater fever is characterized by:", options: ["Jaundice", "Hemoglobinuria and acute renal failure", "Hematemesis", "Melena"], ans: 1 },
+                { q: "Which drug is used for chemoprophylaxis in areas without chloroquine resistance?", options: ["Mefloquine", "Doxycycline", "Chloroquine", "Artemether"], ans: 2 },
+                { q: "Hypoglycemia in severe malaria is exacerbated by:", options: ["Quinine infusion", "Chloroquine", "Primaquine", "Artemether"], ans: 0 },
+                { q: "The WHO recommends ACT because:", options: ["It is cheap", "It reduces resistance by combining two mechanisms", "It has fewer side effects", "It is oral"], ans: 1 },
+                { q: "A patient with P. vivax after completing chloroquine should also receive:", options: ["Artemether", "Primaquine (to eliminate hypnozoites)", "Doxycycline", "No further treatment"], ans: 1 }
+            ] },
+            phn: { next: 'mnemonics', questions: [
+                { q: "A PHN suspects malaria in a patient with fever. What is the first diagnostic step?", options: ["Start ACT immediately", "Collect blood smear (thick and thin)", "Give paracetamol", "Refer to hospital"], ans: 1 },
+                { q: "Malaria is a notifiable disease. The report is submitted through:", options: ["FHSIS (Monthly Form M-1)", "PhilHealth", "NEDA", "DepEd"], ans: 0 },
+                { q: "Which of the following is the most effective intervention at community level?", options: ["Mass drug administration", "Distribution of insecticide-treated nets and health education", "Indoor spraying alone", "Screening of houses"], ans: 1 },
+                { q: "A pregnant woman in an endemic area should receive:", options: ["No prophylaxis", "Intermittent preventive treatment (IPTp) with sulfadoxine-pyrimethamine", "High-dose chloroquine", "Primaquine"], ans: 1 },
+                { q: "The nurse should teach the community to seek treatment within:", options: ["24 hours of fever onset", "After 1 week", "Only when severe", "Never"], ans: 0 },
+                { q: "Which of the following is a key environmental measure for malaria control?", options: ["Planting trees", "Stream clearing and drainage", "Building more roads", "Fogging"], ans: 1 },
+                { q: "A patient with severe malaria (cerebral) should be referred to:", options: ["Barangay health station", "Hospital for IV artesunate", "Traditional healer", "Home quarantine"], ans: 1 },
+                { q: "The PHN's role in malaria surveillance includes:", options: ["Reporting cases weekly", "Conducting active case finding", "Monitoring treatment compliance", "All of the above"], ans: 3 },
+                { q: "Which of the following is NOT a role of the PHN in malaria control?", options: ["Health education", "Blood smear collection", "Performing splenectomy", "Supervising vector control activities"], ans: 2 },
+                { q: "To reduce mosquito breeding sites, the PHN should advise the community to:", options: ["Cover water containers", "Remove stagnant water", "Clear drainage ditches", "All of the above"], ans: 3 }
+            ] }
+        };
+
+        // Build final quiz (50 items)
+        let finalQ = [];
+        for (let sec of ['overview','clinical','transmission','prevention','treatment','phn']) {
+            finalQ = finalQ.concat(quizzes[sec].questions.slice(0,7));
+        }
+        while(finalQ.length < 50) finalQ.push({ q: "Which species of Plasmodium causes relapsing malaria due to dormant liver stage (hypnozoites)?", options: ["P. falciparum", "P. vivax", "P. malariae", "P. knowlesi"], ans: 1 });
+        quizzes['final_quiz'] = { title: 'Final 50‑Item Exam', next: null, questions: finalQ };
+
+        function unlockFirstSection() { if(!unlockedSections.includes('overview')) { unlockedSections.push('overview'); updateSidebarUI(); } showSection('overview'); }
+        function showSection(sectionId) {
+            if (!unlockedSections.includes(sectionId) && sectionId !== 'home') { alert("Please pass the Active Recall Quiz at the bottom of the previous section to unlock this content."); return; }
+            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(sectionId)?.classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => { btn.classList.remove('bg-malaria-light','text-malaria-dark','border-r-4','border-malaria-dark'); btn.classList.add('text-slate-600'); });
+            const activeBtn = document.getElementById('btn-'+sectionId);
+            if(activeBtn) { activeBtn.classList.remove('text-slate-600'); activeBtn.classList.add('bg-malaria-light','text-malaria-dark','border-r-4','border-malaria-dark'); }
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
+            document.querySelector('main').scrollTop = 0;
+        }
+        function updateSidebarUI() {
+            const sections = ['home','overview','clinical','transmission','prevention','treatment','phn','mnemonics','final_quiz_sec'];
+            sections.forEach(sec => {
+                const btn = document.getElementById('btn-'+sec);
+                if(!btn) return;
+                const lockIcon = btn.querySelector('.fa-lock'), mainIcon = btn.querySelector('.nav-icon');
+                if(unlockedSections.includes(sec) || sec==='home') { btn.classList.remove('locked-section'); if(lockIcon) lockIcon.classList.add('hidden'); if(mainIcon) mainIcon.classList.remove('hidden'); }
+                else { btn.classList.add('locked-section'); if(lockIcon) lockIcon.classList.remove('hidden'); if(mainIcon) mainIcon.classList.add('hidden'); }
+            });
+        }
+        let currentQuiz = null;
+        function openQuiz(sectionId) {
+            currentQuiz = sectionId;
+            const qd = quizzes[sectionId];
+            if(!qd) return;
+            document.getElementById('quiz-title').innerText = qd.title;
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = '';
+            qd.questions.forEach((q, idx) => {
+                let html = `<div class="bg-slate-50 p-4 rounded-xl border mb-4"><p class="font-bold mb-3">${idx+1}. ${q.q}</p><div class="space-y-2">`;
+                q.options.forEach((opt, oi) => html += `<label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white"><input type="radio" name="q${idx}" value="${oi}"> <span>${opt}</span></label>`);
+                html += `</div></div>`;
+                container.innerHTML += html;
+            });
+            document.getElementById('quiz-submit-btn').classList.remove('hidden');
+            document.getElementById('quiz-result-container').classList.add('hidden');
+            document.getElementById('quiz-modal').classList.remove('hidden');
+        }
+        function closeQuiz() { document.getElementById('quiz-modal').classList.add('hidden'); }
+        function submitQuiz() {
+            const qd = quizzes[currentQuiz];
+            let score = 0;
+            for(let i=0; i<qd.questions.length; i++) {
+                const sel = document.querySelector(`input[name="q${i}"]:checked`);
+                if(sel && parseInt(sel.value) === qd.questions[i].ans) score++;
+            }
+            const percent = (score/qd.questions.length)*100;
+            const resultDiv = document.getElementById('quiz-result-container');
+            const btn = document.getElementById('quiz-submit-btn');
+            btn.classList.add('hidden');
+            resultDiv.classList.remove('hidden');
+            if(percent >= 75) {
+                if(currentQuiz === 'final_quiz') {
+                    resultDiv.innerHTML = `<div class="text-amber-500 text-6xl mb-4">🏆</div><h3 class="text-2xl font-black">Excellent!</h3><p>Score ${score}/${qd.questions.length} (${percent}%)</p><p class="mt-2 text-green-700">You mastered Malaria!</p><button onclick="closeQuiz()" class="mt-6 bg-slate-800 text-white px-6 py-2 rounded-lg">Close</button>`;
+                    return;
+                }
+                if(qd.next && !unlockedSections.includes(qd.next)) { unlockedSections.push(qd.next); if(qd.next === 'mnemonics') unlockedSections.push('final_quiz_sec'); updateSidebarUI(); }
+                resultDiv.innerHTML = `<div class="text-green-600 text-5xl mb-4">✓</div><h3 class="text-2xl font-black">Passed!</h3><p>Score ${score}/${qd.questions.length} (${percent}%)</p><button onclick="closeQuiz(); showSection('${qd.next}')" class="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg">Unlock Next Section</button>`;
+            } else {
+                resultDiv.innerHTML = `<div class="text-red-500 text-5xl mb-4">✗</div><h3 class="text-2xl font-black">Failed</h3><p>Score ${score}/${qd.questions.length} (${percent}%) – need 75%.</p><button onclick="openQuiz('${currentQuiz}')" class="mt-4 bg-slate-600 text-white px-6 py-2 rounded-lg">Try Again</button>`;
+            }
+        }
+        function toggleRecallMode() {
+            const active = !document.body.classList.contains('recall-mode');
+            const toggle = document.getElementById('recall-toggle'), knob = document.getElementById('recall-knob');
+            if(active) { document.body.classList.add('recall-mode'); toggle.classList.add('bg-malaria-dark'); knob.classList.add('translate-x-6'); }
+            else { document.body.classList.remove('recall-mode'); toggle.classList.remove('bg-malaria-dark'); knob.classList.remove('translate-x-6'); }
+        }
+        function toggleMobileMenu() { const s=document.getElementById('sidebar'); if(s.classList.contains('hidden')) s.classList.remove('hidden','flex','absolute','h-full','z-50'); else s.classList.add('hidden'); }
+        document.addEventListener('DOMContentLoaded', () => { updateSidebarUI(); document.querySelectorAll('.reveal-text').forEach(el => el.addEventListener('click', function(){ if(document.body.classList.contains('recall-mode')) this.classList.toggle('revealed'); })); });
+    </script>
+</body>
+</html>
